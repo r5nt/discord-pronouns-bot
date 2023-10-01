@@ -1,5 +1,4 @@
 import { REST, Routes } from 'discord.js';
-import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -34,15 +33,15 @@ const generateCommandsArray = async ({ commandFolders, foldersPath }) => {
     try {
         const foldersPath = path.join(path.resolve(), 'commands');
         const commandFolders = fs.readdirSync(foldersPath);
-    
+
         const commands = await generateCommandsArray({ commandFolders, foldersPath });
-    
+
         console.log(`Started refreshing ${commands.length} application (/) commands.`);
-    
+
         const data = await rest.put(Routes.applicationCommands(clientId), {
             body: commands
         });
-    
+
         console.log(`Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
         console.error(error);
