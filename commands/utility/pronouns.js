@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
 import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-import { defaultPronouns } from '../../lib/pronouns.js';
+import { defaultPronouns, pronounsGlobalState } from '../../lib/pronouns.js';
 
 const MAX_NUM_PRIMARY_PRONOUNS = 15;
 
@@ -39,7 +39,7 @@ const data = new SlashCommandBuilder()
 
 const execute = async (interaction) => {
     const subcommand = interaction.options.getSubcommand();
-    const primaryGlobalPronouns = [ ...global.pronouns.primary ];
+    const primaryGlobalPronouns = [ ...pronounsGlobalState.primary ];
 
     switch (subcommand) {
         case 'add':
@@ -61,7 +61,7 @@ const execute = async (interaction) => {
                 return;
             }
 
-            global.pronouns.primary = [ ...primaryGlobalPronouns, { id: pronounToAdd } ];
+            pronounsGlobalState.primary = [ ...primaryGlobalPronouns, { id: pronounToAdd } ];
             break;
         case 'remove':
             const pronounToRemove = interaction.options.getString('pronoun');
@@ -74,13 +74,11 @@ const execute = async (interaction) => {
                 return;
             }
 
-            global.pronouns.primary = [ ...primaryGlobalPronouns.filter(({ id }) => id !== pronounToRemove) ];
+            pronounsGlobalState.primary = [ ...primaryGlobalPronouns.filter(({ id }) => id !== pronounToRemove) ];
             break;
         case 'reset':
-            global.pronouns = {
-                primary: [ ...defaultPronouns.primary ],
-                secondary: [ ...defaultPronouns.secondary ]
-            };
+            pronounsGlobalState.primary = [ ...defaultPronouns.primary ];
+            pronounsGlobalState.secondary = [ ...defaultPronouns.secondary ];
             break;
     }
 

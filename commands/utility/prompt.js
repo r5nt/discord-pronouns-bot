@@ -9,7 +9,7 @@ import {
     SlashCommandBuilder
 } from 'discord.js';
 
-import { defaultPronouns } from '../../lib/pronouns.js';
+import { defaultPronouns, pronounsGlobalState } from '../../lib/pronouns.js';
 
 const cooldown = 5;
 
@@ -45,8 +45,8 @@ const execute = async (interaction) => {
         return outputRows;
     };
 
-    const primaryButtons = global.pronouns?.primary || defaultPronouns.primary;
-    const secondaryButtons = global.pronouns?.secondary || defaultPronouns.secondary;
+    const primaryButtons = pronounsGlobalState.primary || defaultPronouns.primary;
+    const secondaryButtons = pronounsGlobalState.secondary || defaultPronouns.secondary;
 
     const secondaryRow = new ActionRowBuilder()
         .addComponents(...generateButtons({ buttons: secondaryButtons }));
