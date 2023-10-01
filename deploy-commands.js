@@ -4,7 +4,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const token = process.env.DISCORD_TOKEN;
-const clientId = process.env.CLIENT_ID;
+const clientId = process.env.DISCORD_CLIENT_ID;
 
 const rest = new REST().setToken(token);
 
