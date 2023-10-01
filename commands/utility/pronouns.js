@@ -1,13 +1,16 @@
 /* eslint-disable no-case-declarations */
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
 import { defaultPronouns } from '../../lib/pronouns.js';
 
-const cooldown = 5;
+const MAX_NUM_PRIMARY_PRONOUNS = 15;
+
+const cooldown = 3;
 
 const data = new SlashCommandBuilder()
     .setName('pronouns')
     .setDescription('Pronoun option settings')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand((subcommand) =>
         subcommand
             .setName('add')
@@ -29,19 +32,28 @@ const data = new SlashCommandBuilder()
                     .setRequired(true)
             )
     ).addSubcommand((subcommand) =>
-    subcommand
-        .setName('reset')
-        .setDescription('Removes all non-default pronouns')
+        subcommand
+            .setName('reset')
+            .setDescription('Removes all non-default pronouns')
 );
 
 const execute = async (interaction) => {
     const subcommand = interaction.options.getSubcommand();
+    const primaryGlobalPronouns = [ ...global.pronouns.primary ];
 
     switch (subcommand) {
         case 'add':
+            if (primaryGlobalPronouns.length >= MAX_NUM_PRIMARY_PRONOUNS) {
+                await interaction.reply({
+                    content: 'Pronoun number limit reached. Remove one or tell nick that we need to add more ',
+                    ephemeral: true
+                });
+                return;
+            }
+
             const pronounToAdd = interaction.options.getString('pronoun');
 
-            if (global.pronouns.primary.find(({ id }) => id === pronounToAdd)) {
+            if (primaryGlobalPronouns.find(({ id }) => id === pronounToAdd)) {
                 await interaction.reply({
                     content: 'This pronoun already exists',
                     ephemeral: true
@@ -49,12 +61,12 @@ const execute = async (interaction) => {
                 return;
             }
 
-            global.pronouns.primary = [ ...global.pronouns.primary, { id: pronounToAdd } ];
+            global.pronouns.primary = [ ...primaryGlobalPronouns, { id: pronounToAdd } ];
             break;
         case 'remove':
             const pronounToRemove = interaction.options.getString('pronoun');
 
-            if (!global.pronouns.primary.find(({ id }) => id === pronounToRemove)) {
+            if (!primaryGlobalPronouns.find(({ id }) => id === pronounToRemove)) {
                 await interaction.reply({
                     content: 'This pronoun doesn\'t exist',
                     ephemeral: true
@@ -62,7 +74,7 @@ const execute = async (interaction) => {
                 return;
             }
 
-            global.pronouns.primary = [ ...global.pronouns.primary.filter(({ id }) => id !== pronounToRemove) ];
+            global.pronouns.primary = [ ...primaryGlobalPronouns.filter(({ id }) => id !== pronounToRemove) ];
             break;
         case 'reset':
             global.pronouns = {

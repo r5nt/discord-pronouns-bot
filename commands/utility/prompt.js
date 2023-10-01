@@ -26,13 +26,33 @@ const execute = async (interaction) => {
             .setStyle(ButtonStyle[style]);
     });
 
+    const generateButtonRows = ({ buttons }) => {
+        const maxNumRows = 3;
+        const maxNumButtonsPerRow = 5;
+        const maxTotalButtons = maxNumRows * maxNumButtonsPerRow;
+
+        const truncatedButtons = buttons.length > maxTotalButtons ? buttons.slice(0, maxTotalButtons) : buttons;
+        const numGroups = Math.ceil(truncatedButtons.length / maxNumButtonsPerRow);
+
+        console.log({ buttons, truncatedButtons });
+
+        const outputRows = [];
+
+        for (let i = 0; i < numGroups; i++) {
+            const buttonsToAdd = truncatedButtons.slice(i * maxNumButtonsPerRow, (i * maxNumButtonsPerRow) + maxNumButtonsPerRow);
+            outputRows[i] = new ActionRowBuilder()
+                .addComponents(...generateButtons({ buttons: buttonsToAdd }));
+        }
+
+        console.log(outputRows);
+
+        return outputRows;
+    };
+
     const primaryButtons = global.pronouns?.primary || defaultPronouns.primary;
     const secondaryButtons = global.pronouns?.secondary || defaultPronouns.secondary;
 
-    const row1 = new ActionRowBuilder()
-        .addComponents(...generateButtons({ buttons: primaryButtons }));
-
-    const row2 = new ActionRowBuilder()
+    const secondaryRow = new ActionRowBuilder()
         .addComponents(...generateButtons({ buttons: secondaryButtons }));
 
     const textContent = blockQuote(`
@@ -42,7 +62,7 @@ const execute = async (interaction) => {
 
     await interaction.reply({
         content: textContent,
-        components: [ row1, row2 ]
+        components: [ ...generateButtonRows({ buttons: primaryButtons }), secondaryRow ]
     });
 };
 
