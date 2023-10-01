@@ -8,7 +8,7 @@ const data = new SlashCommandBuilder()
 
 // interaction.guild is the object representing the Guild in which the command was run
 const execute = async (interaction) => await interaction.reply(`This server is ${interaction.guild.name} and has ${interaction.guild.memberCount} members.`);
-		
+
 export {
     cooldown,
 	data,

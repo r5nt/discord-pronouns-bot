@@ -34,11 +34,11 @@ const generateClientCommandsCollection = async () => {
 const populateClientEvents = async (client) => {
     const eventsPath = path.join(path.resolve(), 'events');
     const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
-    
+
     for (const file of eventFiles) {
         const filePath = pathToFileURL(path.join(eventsPath, file));
         const event = await import(filePath);
-    
+
         if (event.once) {
             client.once(event.name, (...args) => event.execute(...args));
         } else {
