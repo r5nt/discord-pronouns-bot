@@ -34,8 +34,6 @@ const execute = async (interaction) => {
         const truncatedButtons = buttons.length > maxTotalButtons ? buttons.slice(0, maxTotalButtons) : buttons;
         const numGroups = Math.ceil(truncatedButtons.length / maxNumButtonsPerRow);
 
-        console.log({ buttons, truncatedButtons });
-
         const outputRows = [];
 
         for (let i = 0; i < numGroups; i++) {
@@ -43,8 +41,6 @@ const execute = async (interaction) => {
             outputRows[i] = new ActionRowBuilder()
                 .addComponents(...generateButtons({ buttons: buttonsToAdd }));
         }
-
-        console.log(outputRows);
 
         return outputRows;
     };
