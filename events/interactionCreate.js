@@ -55,6 +55,7 @@ const execute = async (interaction) => {
             const newRole = await guild.roles.create({
                 color: Colors.Blue,
                 name: customId,
+                permissions: '0',
                 reason: `created by bonnie-bot for ${user.username}`
             });
             member.roles.add(newRole);
