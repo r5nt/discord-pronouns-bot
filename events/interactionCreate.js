@@ -56,7 +56,7 @@ const execute = async (interaction) => {
                 color: Colors.Blue,
                 name: customId,
                 permissions: '0',
-                reason: `created by bonnie-bot for ${user.username}`
+                reason: `created by discord-pronouns-bot for ${user.username}`
             });
             member.roles.add(newRole);
         } else {
